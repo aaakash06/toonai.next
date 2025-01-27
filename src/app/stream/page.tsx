@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 
 const StreamComponent = () => {
-  const [streamData, setStreamData] = useState("");
+  const [streamData, setStreamData] = useState<string>("");
 
   useEffect(() => {
     // Function to establish a stream connection and fetch data
@@ -79,7 +79,7 @@ const StreamComponent = () => {
   return (
     <div>
       <h1>Streamed Data:</h1>
-      <pre>{JSON.stringify(streamData)}</pre>
+      <pre>{streamData}</pre>
     </div>
   );
 };
