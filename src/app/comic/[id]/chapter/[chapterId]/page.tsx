@@ -1,12 +1,13 @@
-import { Suspense } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
+import React from "react";
+import { Suspense, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 // Mock function to simulate fetching chapter pages
 async function getChapterPages(chapterId: string) {
   // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 1000))
+  await new Promise((resolve) => setTimeout(resolve, 1000));
 
   // Mock data for chapter pages
   return [
@@ -14,7 +15,7 @@ async function getChapterPages(chapterId: string) {
     "/placeholder.svg?height=800&width=600",
     "/placeholder.svg?height=800&width=600",
     // Add more pages as needed
-  ]
+  ];
 }
 
 function ChapterImage({ src }: { src: string }) {
@@ -26,11 +27,11 @@ function ChapterImage({ src }: { src: string }) {
       height={800}
       className="w-full h-auto object-contain mb-4"
     />
-  )
+  );
 }
 
 async function ChapterContent({ chapterId }: { chapterId: string }) {
-  const pages = await getChapterPages(chapterId)
+  const pages = await getChapterPages(chapterId);
 
   return (
     <div>
@@ -38,10 +39,17 @@ async function ChapterContent({ chapterId }: { chapterId: string }) {
         <ChapterImage key={index} src={page} />
       ))}
     </div>
-  )
+  );
 }
 
-export default function ChapterPage({ params }: { params: { id: string; chapterId: string } }) {
+export default function ChapterPage({
+  params,
+}: {
+  params: { id: string; chapterId: string };
+}) {
+  // useEffect(() => {}, []);
+  // const unWrappedParams = React.use(params);
+
   return (
     <div className="container mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold mb-6">Chapter {params.chapterId}</h1>
@@ -56,6 +64,5 @@ export default function ChapterPage({ params }: { params: { id: string; chapterI
         <ChapterContent chapterId={params.chapterId} />
       </Suspense>
     </div>
-  )
+  );
 }
-
