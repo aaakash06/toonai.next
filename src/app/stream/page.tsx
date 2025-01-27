@@ -1,17 +1,19 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
-const StreamComponent = () => {
-  const [streamData, setStreamData] = useState<string>("");
+const ImageStreamViewer = () => {
+  const [imageSrc, setImageSrc] = useState<string>("");
+  const imageRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
-    // Function to establish a stream connection and fetch data
-    const fetchStreamData = async () => {
-      try {
-        // Replace with your server URL
-        const response = await fetch("http://localhost:8080/api/");
+    // Replace with your image stream URL
+    const streamUrl = "http://localhost:8080/api/stream/image/";
 
-        // Check if the response is ok
+    // Function to fetch the image stream
+    const fetchImageStream = async () => {
+      try {
+        const response = await fetch(streamUrl);
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -30,58 +32,42 @@ const StreamComponent = () => {
               break;
             }
 
-            // Convert the Uint8Array chunk to a string
-            const chunk = new TextDecoder().decode(value);
+            // Convert the Uint8Array chunk to a Blob
+            const blob = new Blob([value], { type: "image/jpeg" });
 
-            // Update the state with the new chunk of data
-            setStreamData((prevData) => prevData + chunk);
+            // Create a URL for the Blob and set it as the image source
+            const imageUrl = URL.createObjectURL(blob);
+            setImageSrc(imageUrl);
+
+            // Revoke the previous URL to free up memory
+            if (imageRef.current) {
+              URL.revokeObjectURL(imageRef.current.src);
+            }
           }
         };
 
         // Start reading the stream
         readStream();
       } catch (error) {
-        console.error("Error fetching stream data:", error);
+        console.error("Error fetching image stream:", error);
       }
     };
-    //   const fetchNormalData = async () => {
-    //  fetch("https://localhost:8080/api/")
-    //     .then((response) => {
-    //       if (!response.ok) {
-    //         throw new Error(`HTTP error! status: ${response.status}`);
-    //       }
-    //       return response.text();
-    //     })
-    //     .then((data) => {
-    //       setStreamData(data);
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error fetching stream data:", error);
-    //     });
 
-    //   }
-    // const fetchAxiosData = async () => {
-    //   axios
-    //   .get("http://localhost:8080/api/hello")
-    //   .then((response) => {
-    //     console.log(typeof response.data);
-    //     setStreamData(response.data);
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error fetching stream data:", error);
-    //   });
-
-    // }
-    // Call the function to start fetching stream data
-    fetchStreamData();
+    // Call the function to start fetching the image stream
+    fetchImageStream();
   }, []);
 
   return (
     <div>
-      <h1>Streamed Data:</h1>
-      <pre>{streamData}</pre>
+      <h1>Image Stream Viewer</h1>
+      <img
+        ref={imageRef}
+        src={imageSrc}
+        alt="Streamed Image"
+        style={{ maxWidth: "100%", height: "auto" }}
+      />
     </div>
   );
 };
 
-export default StreamComponent;
+export default ImageStreamViewer;
