@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
 const ImageStreamViewer = () => {
-  const [imageSrc, setImageSrc] = useState<string>("");
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
   const imageRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
@@ -11,6 +11,7 @@ const ImageStreamViewer = () => {
 
     // Function to fetch the image stream
     const fetchImageStream = async () => {
+      console.log("Fetching image stream...");
       try {
         const response = await fetch(streamUrl);
 
@@ -37,6 +38,7 @@ const ImageStreamViewer = () => {
 
             // Create a URL for the Blob and set it as the image source
             const imageUrl = URL.createObjectURL(blob);
+            console.log(imageUrl);
             setImageSrc(imageUrl);
 
             // Revoke the previous URL to free up memory
@@ -60,12 +62,12 @@ const ImageStreamViewer = () => {
   return (
     <div>
       <h1>Image Stream Viewer</h1>
-      <img
+      {/* <img
         ref={imageRef}
         src={imageSrc}
         alt="Streamed Image"
         style={{ maxWidth: "100%", height: "auto" }}
-      />
+      /> */}
     </div>
   );
 };
